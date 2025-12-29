@@ -1,2430 +1,1006 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>City Sense - Your Smart City Companion</title>
-    <style>
-        :root {
-            --city-dark: #0a0e12;
-            --city-surface: #1f2123;
-            --city-yellow: #ffd700;
-            --city-blue: #00d4ff;
-            --city-danger: #ff3b30;
-            --city-success: #34c759;
-            --city-text: #ffffff;
-            --city-text-dim: #a0a0a0;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--city-dark);
-            color: var(--city-text);
-            overflow-x: hidden;
-        }
-
-        /* Navigation */
-        .navbar {
-            background: var(--city-surface);
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--city-yellow), var(--city-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            cursor: pointer;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 30px;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: var(--city-text);
-            text-decoration: none;
-            transition: color 0.3s;
-            cursor: pointer;
-        }
-
-        .nav-links a:hover {
-            color: var(--city-yellow);
-        }
-
-        .nav-links a.active {
-            color: var(--city-yellow);
-        }
-
-        /* Pages */
-        .page {
-            display: none;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* Landing Page */
-        .hero {
-            min-height: 90vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            background: linear-gradient(135deg, #0a0e12 0%, #1a1d2e 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                repeating-linear-gradient(0deg, rgba(255, 215, 0, 0.03) 0px, transparent 1px, transparent 40px),
-                repeating-linear-gradient(90deg, rgba(0, 212, 255, 0.03) 0px, transparent 1px, transparent 40px);
-            animation: gridMove 20s linear infinite;
-        }
-
-        @keyframes gridMove {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(40px, 40px); }
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 1;
-            max-width: 800px;
-            padding: 40px 20px;
-        }
-
-        .hero h1 {
-            font-size: 56px;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, var(--city-yellow), var(--city-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero p {
-            font-size: 20px;
-            color: var(--city-text-dim);
-            margin-bottom: 40px;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 14px 32px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--city-yellow), #ffed4e);
-            color: var(--city-dark);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--city-text);
-            border: 2px solid var(--city-blue);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(0, 212, 255, 0.1);
-            transform: translateY(-3px);
-        }
-
-        .section {
-            padding: 80px 20px;
-        }
-
-        .section-title {
-            font-size: 36px;
-            text-align: center;
-            margin-bottom: 50px;
-            background: linear-gradient(135deg, var(--city-yellow), var(--city-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-
-        .feature-card {
-            background: var(--city-surface);
-            padding: 30px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--city-yellow);
-            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
-        }
-
-        .feature-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-
-        .feature-card h3 {
-            font-size: 20px;
-            margin-bottom: 15px;
-        }
-
-        .feature-card p {
-            color: var(--city-text-dim);
-            line-height: 1.6;
-        }
-
-        .steps {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 40px;
-        }
-
-        .step {
-            flex: 1;
-            min-width: 250px;
-            text-align: center;
-        }
-
-        .step-number {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--city-yellow), var(--city-blue));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--city-dark);
-            margin: 0 auto 20px;
-        }
-
-        .step h3 {
-            margin-bottom: 15px;
-        }
-
-        .step p {
-            color: var(--city-text-dim);
-        }
-
-        .footer {
-            background: var(--city-surface);
-            padding: 40px 20px;
-            text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .footer-links a {
-            color: var(--city-text-dim);
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .footer-links a:hover {
-            color: var(--city-yellow);
-        }
-
-        /* App Page */
-        .app-container {
-            display: grid;
-            grid-template-columns: 300px 1fr 350px;
-            gap: 20px;
-            height: calc(100vh - 60px);
-            padding: 20px;
-        }
-
-        .app-sidebar {
-            background: var(--city-surface);
-            border-radius: 12px;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .app-main {
-            background: var(--city-surface);
-            border-radius: 12px;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .app-panel {
-            background: var(--city-surface);
-            border-radius: 12px;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .control-group {
-            margin-bottom: 25px;
-        }
-
-        .control-group h3 {
-            font-size: 16px;
-            margin-bottom: 12px;
-            color: var(--city-yellow);
-        }
-
-        .city-selector {
-            width: 100%;
-            padding: 10px;
-            background: var(--city-dark);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: var(--city-text);
-            font-size: 14px;
-        }
-
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .filter-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .filter-item:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .filter-item input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .stat-box {
-            background: var(--city-dark);
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--city-yellow);
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: var(--city-text-dim);
-            margin-top: 5px;
-        }
-
-        #mapCanvas {
-            width: 100%;
-            height: 100%;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .map-controls {
-            position: absolute;
-            top: 30px;
-            right: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .map-btn {
-            width: 40px;
-            height: 40px;
-            background: var(--city-surface);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            color: var(--city-text);
-            font-size: 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-
-        .map-btn:hover {
-            background: var(--city-yellow);
-            color: var(--city-dark);
-        }
-
-        .incident-popup {
-            display: none;
-            position: absolute;
-            background: var(--city-surface);
-            border: 2px solid var(--city-yellow);
-            border-radius: 12px;
-            padding: 20px;
-            max-width: 300px;
-            z-index: 10;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .incident-popup.show {
-            display: block;
-        }
-
-        .popup-close {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: transparent;
-            border: none;
-            color: var(--city-text-dim);
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        .popup-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            padding-right: 30px;
-        }
-
-        .popup-meta {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-        }
-
-        .popup-badge {
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .badge-high {
-            background: rgba(255, 59, 48, 0.2);
-            color: var(--city-danger);
-        }
-
-        .badge-medium {
-            background: rgba(255, 215, 0, 0.2);
-            color: var(--city-yellow);
-        }
-
-        .badge-low {
-            background: rgba(52, 199, 89, 0.2);
-            color: var(--city-success);
-        }
-
-        .popup-desc {
-            color: var(--city-text-dim);
-            margin-bottom: 15px;
-            line-height: 1.5;
-        }
-
-        .popup-footer {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: var(--city-text-dim);
-        }
-
-        .feed-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .feed-header h3 {
-            font-size: 18px;
-            color: var(--city-yellow);
-        }
-
-        .refresh-btn {
-            background: var(--city-blue);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .refresh-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .feed-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .feed-item {
-            background: var(--city-dark);
-            padding: 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border-left: 3px solid;
-        }
-
-        .feed-item.traffic {
-            border-left-color: #ff9500;
-        }
-
-        .feed-item.safety {
-            border-left-color: #ff3b30;
-        }
-
-        .feed-item.news {
-            border-left-color: #00d4ff;
-        }
-
-        .feed-item.event {
-            border-left-color: #34c759;
-        }
-
-        .feed-item:hover {
-            transform: translateX(5px);
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .feed-item.highlighted {
-            background: rgba(255, 215, 0, 0.1);
-            border-left-width: 5px;
-        }
-
-        .feed-item-title {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .feed-item-meta {
-            font-size: 11px;
-            color: var(--city-text-dim);
-            display: flex;
-            gap: 10px;
-        }
-
-        .report-btn {
-            width: 100%;
-            padding: 14px;
-            background: var(--city-danger);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-bottom: 20px;
-        }
-
-        .report-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(255, 59, 48, 0.3);
-        }
-
-        .plan-day {
-            background: var(--city-dark);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .plan-day h4 {
-            color: var(--city-yellow);
-            margin-bottom: 15px;
-        }
-
-        .risk-level {
-            display: inline-block;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-
-        .risk-low {
-            background: rgba(52, 199, 89, 0.2);
-            color: var(--city-success);
-        }
-
-        .risk-medium {
-            background: rgba(255, 215, 0, 0.2);
-            color: var(--city-yellow);
-        }
-
-        .risk-high {
-            background: rgba(255, 59, 48, 0.2);
-            color: var(--city-danger);
-        }
-
-        .risky-areas {
-            list-style: none;
-            font-size: 13px;
-            color: var(--city-text-dim);
-        }
-
-        .risky-areas li {
-            padding: 5px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .ai-section {
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .ai-input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .ai-input {
-            flex: 1;
-            padding: 12px;
-            background: var(--city-dark);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: var(--city-text);
-            font-size: 14px;
-        }
-
-        .ai-btn {
-            padding: 12px 24px;
-            background: var(--city-yellow);
-            color: var(--city-dark);
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .ai-result {
-            display: none;
-            background: var(--city-dark);
-            padding: 20px;
-            border-radius: 8px;
-            border: 2px solid;
-        }
-
-        .ai-result.show {
-            display: block;
-        }
-
-        .ai-result.real {
-            border-color: var(--city-success);
-        }
-
-        .ai-result.fake {
-            border-color: var(--city-danger);
-        }
-
-        .ai-result.suspicious {
-            border-color: var(--city-yellow);
-        }
-
-        .ai-score {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .score-number {
-            font-size: 48px;
-            font-weight: 700;
-            margin: 10px 0;
-        }
-
-        .verdict-badge {
-            display: inline-block;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .ai-reasons {
-            list-style: none;
-        }
-
-        .ai-reasons li {
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            color: var(--city-text-dim);
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--city-surface);
-            padding: 30px;
-            border-radius: 12px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .modal-close {
-            background: transparent;
-            border: none;
-            color: var(--city-text-dim);
-            font-size: 28px;
-            cursor: pointer;
-            padding: 0;
-            width: 30px;
-            height: 30px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            color: var(--city-text-dim);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px;
-            background: var(--city-dark);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: var(--city-text);
-            font-size: 14px;
-        }
-
-        textarea.form-control {
-            min-height: 100px;
-            resize: vertical;
-            font-family: inherit;
-        }
-
-        /* About Page */
-        .about-hero {
-            text-align: center;
-            padding: 80px 20px;
-            background: linear-gradient(135deg, #0a0e12 0%, #1a1d2e 100%);
-        }
-
-        .about-hero h1 {
-            font-size: 48px;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, var(--city-yellow), var(--city-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .about-content {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 60px 20px;
-        }
-
-        .about-content h2 {
-            font-size: 32px;
-            margin: 40px 0 20px;
-            color: var(--city-yellow);
-        }
-
-        .about-content p {
-            font-size: 18px;
-            line-height: 1.8;
-            color: var(--city-text-dim);
-            margin-bottom: 20px;
-        }
-
-        .faq-item {
-            background: var(--city-surface);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .faq-item:hover {
-            border-left: 4px solid var(--city-yellow);
-        }
-
-        .faq-question {
-            font-size: 18px;
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .faq-answer {
-            display: none;
-            margin-top: 15px;
-            color: var(--city-text-dim);
-            line-height: 1.6;
-        }
-
-        .faq-item.active .faq-answer {
-            display: block;
-        }
-
-        /* Contact Page */
-        .contact-hero {
-            text-align: center;
-            padding: 80px 20px;
-            background: linear-gradient(135deg, #0a0e12 0%, #1a1d2e 100%);
-        }
-
-        .contact-hero h1 {
-            font-size: 48px;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, var(--city-yellow), var(--city-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .contact-form {
-            max-width: 600px;
-            margin: 60px auto;
-            padding: 40px;
-            background: var(--city-surface);
-            border-radius: 12px;
-        }
-
-        .success-message {
-            display: none;
-            background: rgba(52, 199, 89, 0.2);
-            border: 2px solid var(--city-success);
-            color: var(--city-success);
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .success-message.show {
-            display: block;
-        }
-
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--city-surface);
-            padding: 15px 25px;
-            border-radius: 8px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-            display: none;
-            z-index: 1001;
-            border-left: 4px solid;
-            min-width: 250px;
-        }
-
-        .toast.show {
-            display: block;
-            animation: slideIn 0.3s ease-out;
-        }
-
-        .toast.success {
-            border-left-color: var(--city-success);
-        }
-
-        .toast.error {
-            border-left-color: var(--city-danger);
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 20px;
-        }
-
-        .spinner {
-            border: 3px solid rgba(255, 255, 255, 0.1);
-            border-top: 3px solid var(--city-yellow);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .app-container {
-                grid-template-columns: 1fr;
-                grid-template-rows: auto auto auto;
-                height: auto;
-            }
-
-            .app-main {
-                min-height: 400px;
-                order: 2;
-            }
-
-            .app-sidebar {
-                order: 1;
-            }
-
-            .app-panel {
-                order: 3;
-            }
-
-            .nav-links {
-                flex-wrap: wrap;
-                gap: 10px;
-                font-size: 14px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 32px;
-                line-height: 1.2;
-            }
-
-            .hero p {
-                font-size: 16px;
-            }
-
-            .nav-container {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .nav-links {
-                flex-direction: column;
-                width: 100%;
-                text-align: center;
-                gap: 10px;
-            }
-
-            .logo {
-                font-size: 20px;
-            }
-
-            .cards-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .cta-buttons {
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .btn {
-                width: 100%;
-            }
-
-            .section {
-                padding: 40px 15px;
-            }
-
-            .section-title {
-                font-size: 28px;
-            }
-
-            .feature-card {
-                padding: 20px;
-            }
-
-            .steps {
-                flex-direction: column;
-            }
-
-            .step {
-                min-width: 100%;
-            }
-
-            .app-container {
-                padding: 10px;
-                gap: 10px;
-            }
-
-            .app-sidebar,
-            .app-main,
-            .app-panel {
-                padding: 15px;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .map-controls {
-                top: 15px;
-                right: 15px;
-            }
-
-            .incident-popup {
-                max-width: 90%;
-                left: 5% !important;
-            }
-
-            .modal-content {
-                padding: 20px;
-                width: 95%;
-            }
-
-            .about-hero h1,
-            .contact-hero h1 {
-                font-size: 32px;
-            }
-
-            .about-content,
-            .contact-form {
-                padding: 20px;
-            }
-
-            .footer-links {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .ai-input-group {
-                flex-direction: column;
-            }
-
-            .ai-btn {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hero h1 {
-                font-size: 24px;
-            }
-
-            .hero p {
-                font-size: 14px;
-            }
-
-            .section-title {
-                font-size: 22px;
-            }
-
-            .feature-icon {
-                font-size: 36px;
-            }
-
-            .step-number {
-                width: 60px;
-                height: 60px;
-                font-size: 24px;
-            }
-
-            .btn {
-                padding: 12px 24px;
-                font-size: 14px;
-            }
-
-            .stat-number {
-                font-size: 20px;
-            }
-
-            .feed-item-title {
-                font-size: 13px;
-            }
-
-            .popup-title {
-                font-size: 16px;
-            }
-
-            .logo {
-                font-size: 18px;
-            }
-        }
-
-        /* Hamburger Menu for Mobile */
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-            gap: 5px;
-        }
-
-        .hamburger span {
-            width: 25px;
-            height: 3px;
-            background: var(--city-yellow);
-            border-radius: 2px;
-            transition: all 0.3s;
-        }
-
-        @media (max-width: 768px) {
-            .hamburger {
-                display: flex;
-            }
-
-            .nav-links {
-                position: fixed;
-                top: 60px;
-                left: -100%;
-                width: 100%;
-                background: var(--city-surface);
-                flex-direction: column;
-                padding: 20px;
-                transition: left 0.3s;
-                z-index: 99;
-                border-top: 1px solid rgba(255, 215, 0, 0.1);
-            }
-
-            .nav-links.active {
-                left: 0;
-            }
-
-            .nav-container {
-                flex-direction: row;
-                justify-content: space-between;
-            }
-        }
-
-        /* Touch Improvements */
-        @media (hover: none) and (pointer: coarse) {
-            .btn,
-            .map-btn,
-            .refresh-btn,
-            .report-btn,
-            .filter-item,
-            .feed-item {
-                min-height: 44px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .form-control,
-            .city-selector {
-                min-height: 44px;
-                font-size: 16px;
-            }
-        }
-
-        /* Improved Canvas Scaling */
-            width: 100%;
-            height: 100%;
-            max-width: 100%;
-            touch-action: none;
-        }
-
-        /* Better Modal on Mobile */
-        @media (max-width: 768px) {
-            .modal {
-                padding: 10px;
-            }
-
-            .modal-content {
-                max-height: 80vh;
-            }
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Sense - Your Smart City Companion</title>
+    <style>
+        :root {
+            --city-dark: #0a0e12;
+            --city-surface: #1f2123;
+            --city-yellow: #ffd700;
+            --city-blue: #00d4ff;
+            --city-danger: #ff3b30;
+            --city-success: #34c759;
+            --city-text: #ffffff;
+            --city-text-dim: #a0a0a0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--city-dark);
+            color: var(--city-text);
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: var(--city-surface);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--city-yellow), var(--city-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo img {
+            width: 32px;
+            height: 32px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--city-text);
+            text-decoration: none;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            color: var(--city-yellow);
+        }
+
+        .nav-links a.active {
+            color: var(--city-yellow);
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Landing Page */
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, #0a0e12 0%, #1a1d2e 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(0deg, rgba(255, 215, 0, 0.03) 0px, transparent 1px, transparent 40px),
+                repeating-linear-gradient(90deg, rgba(0, 212, 255, 0.03) 0px, transparent 1px, transparent 40px);
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(40px, 40px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            padding: 40px 20px;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--city-yellow), var(--city-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: var(--city-text-dim);
+            margin-bottom: 40px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--city-yellow), #ffed4e);
+            color: var(--city-dark);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--city-text);
+            border: 2px solid var(--city-blue);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 212, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .section {
+            padding: 80px 20px;
+        }
+
+        .section-title {
+            font-size: 36px;
+            text-align: center;
+            margin-bottom: 50px;
+            background: linear-gradient(135deg, var(--city-yellow), var(--city-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background: var(--city-surface);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--city-yellow);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            color: var(--city-text-dim);
+            line-height: 1.6;
+        }
+
+        .steps {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+
+        .step {
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--city-yellow), var(--city-blue));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--city-dark);
+            margin: 0 auto 20px;
+        }
+
+        .step h3 {
+            margin-bottom: 15px;
+        }
+
+        .step p {
+            color: var(--city-text-dim);
+        }
+
+        .footer {
+            background: var(--city-surface);
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--city-text-dim);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .footer-links a:hover {
+            color: var(--city-yellow);
+        }
+
+        /* App Page */
+        .app-container {
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            gap: 20px;
+            height: calc(100vh - 60px);
+            padding: 20px;
+        }
+
+        .app-sidebar {
+            background: var(--city-surface);
+            border-radius: 12px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .app-main {
+            background: var(--city-surface);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-panel {
+            background: var(--city-surface);
+            border-radius: 12px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .control-group {
+            margin-bottom: 25px;
+        }
+
+        .control-group h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: var(--city-yellow);
+        }
+
+        .city-selector {
+            width: 100%;
+            padding: 10px;
+            background: var(--city-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--city-text);
+            font-size: 14px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .filter-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .filter-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: var(--city-dark);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--city-yellow);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--city-text-dim);
+            margin-top: 5px;
+        }
+
+        .map-controls {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .map-btn {
+            width: 40px;
+            height: 40px;
+            background: var(--city-surface);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: var(--city-text);
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .map-btn:hover {
+            background: var(--city-yellow);
+            color: var(--city-dark);
+        }
+
+        .feed-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .feed-header h3 {
+            font-size: 18px;
+            color: var(--city-yellow);
+        }
+
+        .refresh-btn {
+            background: var(--city-blue);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .feed-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .feed-item {
+            background: var(--city-dark);
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 3px solid;
+        }
+
+        .feed-item.traffic {
+            border-left-color: #ff9500;
+        }
+
+        .feed-item.safety {
+            border-left-color: #ff3b30;
+        }
+
+        .feed-item.news {
+            border-left-color: #00d4ff;
+        }
+
+        .feed-item.event {
+            border-left-color: #34c759;
+        }
+
+        .feed-item:hover {
+            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .feed-item.highlighted {
+            background: rgba(255, 215, 0, 0.1);
+            border-left-width: 5px;
+        }
+
+        .feed-item-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .feed-item-meta {
+            font-size: 11px;
+            color: var(--city-text-dim);
+            display: flex;
+            gap: 10px;
+        }
+
+        .report-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--city-danger);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .report-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(255, 59, 48, 0.3);
+        }
+
+        .plan-day {
+            background: var(--city-dark);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .plan-day h4 {
+            color: var(--city-yellow);
+            margin-bottom: 15px;
+        }
+
+        .risk-level {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .risk-low {
+            background: rgba(52, 199, 89, 0.2);
+            color: var(--city-success);
+        }
+
+        .risk-medium {
+            background: rgba(255, 215, 0, 0.2);
+            color: var(--city-yellow);
+        }
+
+        .risk-high {
+            background: rgba(255, 59, 48, 0.2);
+            color: var(--city-danger);
+        }
+
+        .risky-areas {
+            list-style: none;
+            font-size: 13px;
+            color: var(--city-text-dim);
+        }
+
+        .risky-areas li {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .ai-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ai-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .ai-input {
+            flex: 1;
+            padding: 12px;
+            background: var(--city-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--city-text);
+            font-size: 14px;
+        }
+
+        .ai-btn {
+            padding: 12px 24px;
+            background: var(--city-yellow);
+            color: var(--city-dark);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .ai-result {
+            display: none;
+            background: var(--city-dark);
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid;
+        }
+
+        .ai-result.show {
+            display: block;
+        }
+
+        .ai-result.real {
+            border-color: var(--city-success);
+        }
+
+        .ai-result.fake {
+            border-color: var(--city-danger);
+        }
+
+        .ai-result.suspicious {
+            border-color: var(--city-yellow);
+        }
+
+        .ai-score {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .score-number {
+            font-size: 48px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .verdict-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .ai-reasons {
+            list-style: none;
+        }
+
+        .ai-reasons li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--city-text-dim);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--city-surface);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--city-text-dim);
+            font-size: 28px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--city-text-dim);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            background: var(--city-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--city-text);
+            font-size: 14px;
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        /* About Page */
+        .about-hero {
+            text-align: center;
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #0a0e12 0%, #1a1d2e 100%);
+        }
+
+        .about-hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--city-yellow), var(--city-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .about-content h2 {
+            font-size: 32px;
+            margin: 40px 0 20px;
+            color: var(--city-yellow);
+        }
+
+        .about-content p {
+            font-size: 18px;
+            line-height: 1.8;
+            color: var(--city-text-dim);
+            margin-bottom: 20px;
+        }
+
+        .faq-item {
+            background: var(--city-surface);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .faq-item:hover {
+            border-left: 4px solid var(--city-yellow);
+        }
+
+        .faq-question {
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-answer {
+            display: none;
+            margin-top: 15px;
+            color: var(--city-text-dim);
+            line-height: 1.6;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        /* Contact Page */
+        .contact-hero {
+            text-align: center;
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #0a0e12 0%, #1a1d2e 100%);
+        }
+
+        .contact-hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--city-yellow), var(--city-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .contact-form {
+            max-width: 600px;
+            margin: 60px auto;
+            padding: 40px;
+            background: var(--city-surface);
+            border-radius: 12px;
+        }
+
+        .success-message {
+            display: none;
+            background: rgba(52, 199, 89, 0.2);
+            border: 2px solid var(--city-success);
+            color: var(--city-success);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--city-surface);
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 1001;
+            border-left: 4px solid;
+            min-width: 250px;
+        }
+
+        .toast.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .toast.success {
+            border-left-color: var(--city-success);
+        }
+
+        .toast.error {
+            border-left-color: var(--city-danger);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid var(--city-yellow);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--city-yellow);
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 60px;
+                left: -100%;
+                width: 100%;
+                background: var(--city-surface);
+                flex-direction: column;
+                padding: 20px;
+                transition: left 0.3s;
+                z-index: 99;
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+        }
+    </style>
 </head>
 <body>
-    <chat-bot platform_id="e07192be-d73b-4ea1-aa0e-87a280b6e282" user_id="b3af2448-e981-4773-b565-d9d1850413e5" chatbot_id="523734e0-cacf-476d-acd3-e1d85ddaf51e"><a href="https://www.expertise.ai/?utm_source=widget&utm_medium=referral">expertise.ai - AI SDR Agent</a></chat-bot><script src="https://cdn.expertise.ai/chat-bot-loader.js" defer></script>
-            <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo" onclick="navigateTo('home')">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23ffd700;stop-opacity:1'/%3E%3Cstop offset='100%25' style='stop-color:%2300d4ff;stop-opacity:1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='45' fill='url(%23grad)'/%3E%3Cpath d='M30 60 L30 40 L40 35 L40 60 M45 60 L45 35 L55 30 L55 60 M60 60 L60 30 L70 25 L70 60' stroke='%230a0e12' stroke-width='3' fill='none'/%3E%3C/svg%3E" alt="City Sense" style="width: 32px; height: 32px; margin-right: 10px;">
-                <span>City Sense</span>
-            </div>
-            <div class="hamburger" onclick="toggleMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-            <ul class="nav-links" id="navLinks">
-                <li><a onclick="navigateTo('home'); closeMenu();" class="nav-link">Home</a></li>
-                <li><a onclick="scrollToSection('how-it-works'); closeMenu();" class="nav-link">How It Works</a></li>
-                <li><a onclick="navigateTo('about'); closeMenu();" class="nav-link">About</a></li>
-                <li><a onclick="navigateTo('contact'); closeMenu();" class="nav-link">Contact</a></li>
-                <li><a onclick="navigateTo('app'); closeMenu();" class="nav-link">Open City View</a></li>
-                <li id="userSection" style="display: none;">
-                    <span id="userName" style="color: var(--city-yellow); margin-right: 10px;"></span>
-                    <a onclick="logout(); closeMenu();" class="nav-link" style="color: var(--city-danger);">Logout</a>
-                </li>
-                <li id="loginSection">
-                    <a onclick="navigateTo('login'); closeMenu();" class="nav-link">Login</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-        <div id="homePage" class="page active">
-                <section class="hero">
-            <div class="hero-content">
-                <h1>City Sense makes your day better</h1>
-                <p>Real-time, AI-verified updates on safety, traffic, and events around you.</p>
-                <div class="cta-buttons">
-                    <button class="btn btn-primary" onclick="navigateTo('app')">Open City View</button>
-                    <button class="btn btn-secondary" onclick="scrollToSection('how-it-works')">See How It Works</button>
-                </div>
-            </div>
-        </section>
-
-                <section class="section">
-            <div class="container">
-                <h2 class="section-title">The City Blind Spot</h2>
-                <div class="cards-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">🤷</div>
-                        <h3>No Real-Time Awareness</h3>
-                        <p>People don't know what's really happening around them in their city right now.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">📰</div>
-                        <h3>Fake News Confusion</h3>
-                        <p>Unverified news creates panic and makes it hard to know what's actually true.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🚗</div>
-                        <h3>Unknown Road Safety</h3>
-                        <p>You don't know which roads are safe or which areas to avoid until it's too late.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🆘</div>
-                        <h3>Hard to Get Help</h3>
-                        <p>When something feels risky, there's no quick way to reach help or flag the situation.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-                <section class="section" style="background: var(--city-surface);">
-            <div class="container">
-                <h2 class="section-title">What City Sense Does</h2>
-                <div class="cards-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">📡</div>
-                        <h3>Live City Feed</h3>
-                        <p>See what's happening around you and in your city in real time - accidents, events, alerts.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🛡️</div>
-                        <h3>Safe Route Checker</h3>
-                        <p>Shows which roads are safe and which areas to avoid based on live reports.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🚦</div>
-                        <h3>Traffic & Jam Updates</h3>
-                        <p>Live info on congested routes so you can plan smarter and save time.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🤖</div>
-                        <h3>AI News Verification</h3>
-                        <p>AI detector checks if news looks real or fake before you believe or share it.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🚨</div>
-                        <h3>Help & Alerts</h3>
-                        <p>Option to contact help or flag risky situations with one tap.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-                <section id="how-it-works" class="section">
-            <div class="container">
-                <h2 class="section-title">How It Works</h2>
-                <div class="steps">
-                    <div class="step">
-                        <div class="step-number">1</div>
-                        <h3>Open City Sense</h3>
-                        <p>Share your location to see what's happening near you</p>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">2</div>
-                        <h3>View Live Updates</h3>
-                        <p>See real-time safety, traffic, and news updates on your map</p>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">3</div>
-                        <h3>Plan Your Day</h3>
-                        <p>Choose safe routes and make informed decisions</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-                <section class="section" style="background: var(--city-surface);">
-            <div class="container">
-                <h2 class="section-title">Plan Your Day with Confidence</h2>
-                <div class="cards-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">💼</div>
-                        <h3>For Commuters</h3>
-                        <p>Check which routes are jammed before leaving home. Save time every morning.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🎓</div>
-                        <h3>For Students</h3>
-                        <p>Check safety around campus and stay aware of any incidents nearby.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">📱</div>
-                        <h3>For Everyone</h3>
-                        <p>Verify breaking news before believing or sharing it. Stop misinformation.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-                <section class="section">
-            <div class="container">
-                <h2 class="section-title">Powered by AI Verification</h2>
-                <div style="max-width: 700px; margin: 0 auto; text-align: center;">
-                    <p style="font-size: 18px; color: var(--city-text-dim); line-height: 1.8;">
-                        Our AI checks patterns, sources, and context to flag suspicious or fake news. 
-                        The goal is to reduce panic, misinformation, and confusion - helping you make better decisions.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-                <section class="section" style="background: linear-gradient(135deg, var(--city-yellow), #ffed4e); color: var(--city-dark);">
-            <div class="container" style="text-align: center;">
-                <h2 style="font-size: 42px; margin-bottom: 20px; color: var(--city-dark);">Move smarter in your city</h2>
-                <button class="btn" style="background: var(--city-dark); color: var(--city-yellow); font-size: 18px; padding: 16px 40px;" onclick="navigateTo('app')">
-                    Start Using City Sense
-                </button>
-            </div>
-        </section>
-
-                <footer class="footer">
-            <div class="footer-links">
-                <a onclick="navigateTo('about')">About</a>
-                <a onclick="navigateTo('contact')">Contact</a>
-                <a href="#">Privacy Policy</a>
-                <a href="#">Support</a>
-            </div>
-            <p style="color: var(--city-text-dim); margin-top: 20px;">
-                City Sense – making your day better.
-            </p>
-        </footer>
-    </div>
-
-        <div id="appPage" class="page">
-        <div class="app-container">
-                        <div class="app-sidebar">
-                <div class="control-group">
-                    <h3>📍 Select City</h3>
-                    <select class="city-selector" id="citySelector" onchange="changeCity()">
-                        <option value="Delhi">Delhi</option>
-                        <option value="Mumbai">Mumbai</option>
-                        <option value="Bangalore">Bangalore</option>
-                        <option value="Kolkata">Kolkata</option>
-                        <option value="Chennai">Chennai</option>
-                    </select>
-                </div>
-
-                <div class="control-group">
-                    <h3>🎛️ Filters</h3>
-                    <div class="filter-group">
-                        <label class="filter-item">
-                            <input type="checkbox" checked onchange="toggleFilter('traffic')">
-                            <span>🚗 Traffic</span>
-                        </label>
-                        <label class="filter-item">
-                            <input type="checkbox" checked onchange="toggleFilter('safety')">
-                            <span>🛡️ Safety</span>
-                        </label>
-                        <label class="filter-item">
-                            <input type="checkbox" checked onchange="toggleFilter('news')">
-                            <span>📰 News</span>
-                        </label>
-                        <label class="filter-item">
-                            <input type="checkbox" checked onchange="toggleFilter('event')">
-                            <span>🎉 Events</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <h3>📊 Statistics</h3>
-                    <div class="stats-grid">
-                        <div class="stat-box">
-                            <div class="stat-number" id="statAlerts">0</div>
-                            <div class="stat-label">Active Alerts</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-number" id="statVerified">0</div>
-                            <div class="stat-label">Verified</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-number" id="statTraffic">0</div>
-                            <div class="stat-label">Traffic Jams</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-number" id="statSafe">0</div>
-                            <div class="stat-label">Safe Routes</div>
-                        </div>
-                    </div>
-                </div>
-
-                <button class="report-btn" onclick="openReportModal()">📝 Post News/Incident</button>
-
-                <div class="control-group" style="margin-bottom: 20px;">
-                    <h3>📍 Your Location</h3>
-                    <div id="userLocationDisplay" style="font-size: 13px; color: var(--city-text-dim); padding: 10px; background: var(--city-dark); border-radius: 8px;">
-                        Detecting location...
-                    </div>
-                </div>
-
-                <div class="control-group" style="margin-bottom: 20px;">
-                    <h3>🚨 Emergency Services</h3>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                        <button onclick="callEmergency('100', 'Police')" style="padding: 12px; background: #ff3b30; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600;">
-                            🚔 Police<br><small>100</small>
-                        </button>
-                        <button onclick="callEmergency('102', 'Ambulance')" style="padding: 12px; background: #34c759; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600;">
-                            🚑 Ambulance<br><small>102</small>
-                        </button>
-                        <button onclick="callEmergency('101', 'Fire')" style="padding: 12px; background: #ff9500; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600;">
-                            🚒 Fire<br><small>101</small>
-                        </button>
-                        <button onclick="callEmergency('108', 'Disaster')" style="padding: 12px; background: #00d4ff; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600;">
-                            ⚠️ Disaster<br><small>108</small>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="plan-day">
-                    <h4>📅 Plan Your Day</h4>
-                    <div id="riskLevel"></div>
-                    <ul class="risky-areas" id="riskyAreas"></ul>
-                    <p style="font-size: 13px; color: var(--city-text-dim); margin-top: 10px;" id="routeSuggestion"></p>
-                </div>
-                
-            </div>
-
-                        <div class="app-main">
-                <div id="googleMap" style="width: 100%; height: 100%; border-radius: 8px;"></div>
-                <div class="map-controls">
-                    <button class="map-btn" onclick="zoomIn()">+</button>
-                    <button class="map-btn" onclick="zoomOut()">−</button>
-                </div>
-                <div id="incidentPopup" class="incident-popup"></div>
-            </div>
-
-                        <div class="app-panel">
-                <div class="feed-header">
-                    <h3>🔴 Live Feed</h3>
-                    <button class="refresh-btn" onclick="refreshFeed()">🔄</button>
-                </div>
-                <div class="feed-list" id="feedList"></div>
-                
-                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-                    <h3 style="color: var(--city-yellow); margin-bottom: 15px; font-size: 16px;">📰 News Details</h3>
-                    <div id="newsDetailView" style="font-size: 13px; color: var(--city-text-dim);">
-                        Click on any news to view details, photos, and videos
-                    </div>
-                </div>
-
-                <div class="ai-section">
-                    <h3 style="color: var(--city-yellow); margin-bottom: 15px;">🤖 AI News Verifier</h3>
-                    <div class="ai-input-group">
-                        <input type="text" class="ai-input" id="newsInput" placeholder="Paste news headline...">
-                        <button class="ai-btn" onclick="verifyNews()">Check</button>
-                    </div>
-                    <div id="aiResult" class="ai-result"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-        <div id="aboutPage" class="page">
-        <div class="about-hero">
-            <h1>About City Sense</h1>
-            <p style="font-size: 20px; color: var(--city-text-dim); max-width: 700px; margin: 20px auto;">
-                Making cities safer and smarter, one update at a time
-            </p>
-        </div>
-
-        <div class="about-content">
-            <h2>Our Mission</h2>
-            <p>
-                City Sense was built to solve a simple problem: people don't know what's really happening in their city. 
-                We believe everyone deserves access to real-time, verified information about safety, traffic, and events around them.
-            </p>
-
-            <h2>How We Use AI 
-            </h2>
-            <p>
-                Our AI analyzes news patterns, cross-references sources, and checks for credibility indicators to help you 
-                distinguish real news from misinformation. We use advanced natural language processing to detect sensationalism, 
-                verify facts, and provide confidence scores.
-            </p>
-
-            <h2>Why It Matters</h2>
-            <p>
-                Misinformation spreads faster than truth. Unsafe routes cause unnecessary delays and risks. 
-                City Sense gives you the power to make informed decisions and plan your day with confidence.
-            </p>
-
-            <h2>Frequently Asked Questions</h2>
-            <div class="faq-item" onclick="toggleFaq(this)">
-                <div class="faq-question">
-                    How accurate is the AI verification?
-                    <span>▼</span>
-                </div>
-                <div class="faq-answer">
-                    Our AI achieves 85-90% accuracy by analyzing multiple factors including source credibility, 
-                    language patterns, and cross-referencing with verified databases. It provides confidence scores 
-                    to help you make informed judgments.
-                </div>
-            </div>
-            <div class="faq-item" onclick="toggleFaq(this)">
-                <div class="faq-question">
-                    Is my location data private?
-                    <span>▼</span>
-                </div>
-                <div class="faq-answer">
-                    Yes. We only use your location to show relevant nearby incidents. Your data is never stored 
-                    permanently or shared with third parties. You can use City Sense without sharing your location.
-                </div>
-            </div>
-            <div class="faq-item" onclick="toggleFaq(this)">
-                <div class="faq-question">
-                    How do I report an incident?
-                    <span>▼</span>
-                </div>
-                <div class="faq-answer">
-                    Click the "Post News/Incident" button in the app, fill in the details including type, location, 
-                    and description, then submit. Your report appears instantly on the map and feed for other users.
-                </div>
-            </div>
-
-            <div style="text-align: center; margin-top: 60px;">
-                <button class="btn btn-primary" onclick="navigateTo('app')" style="font-size: 18px;">
-                    Try City Sense Now
-                </button>
-            </div>
-        </div>
-    </div>
-
-        <div id="contactPage" class="page">
-        <div class="contact-hero">
-            <h1>Contact Us</h1>
-            <p style="font-size: 20px; color: var(--city-text-dim); max-width: 700px; margin: 20px auto;">
-                Have questions or feedback? We'd love to hear from you.
-            </p>
-        </div>
-
-        <div class="contact-form">
-            <div id="contactSuccess" class="success-message">
-                ✅ Thank you for reaching out! We'll get back to you soon.
-            </div>
-            <form id="contactFormElement" onsubmit="submitContact(event)">
-                <div class="form-group">
-                    <label>Your Name</label>
-                    <input type="text" class="form-control" id="contactName" required>
-                </div>
-                <div class="form-group">
-                    <label>Your Email</label>
-                    <input type="email" class="form-control" id="contactEmail" required>
-                </div>
-                <div class="form-group">
-                    <label>Subject</label>
-                    <select class="form-control" id="contactSubject">
-                        <option>General Inquiry</option>
-                        <option>Report a Bug</option>
-                        <option>Feature Request</option>
-                        <option>Partnership</option>
-                        <option>Other</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Message</label>
-                    <textarea class="form-control" id="contactMessage" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
-            </form>
-        </div>
-    </div>
-
-        <div id="reportModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Report an Incident</h2>
-                <button class="modal-close" onclick="closeReportModal()">×</button>
-            </div>
-            <form id="reportForm" onsubmit="submitReport(event)">
-                <div class="form-group">
-                    <label>Type</label>
-                    <select class="form-control" id="reportType">
-                        <option value="traffic">Traffic / Accident</option>
-                        <option value="safety">Safety Concern / Crime</option>
-                        <option value="event">Public Event</option>
-                        <option value="news">News / Update</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Location / Area</label>
-                    <input type="text" class="form-control" id="reportLocation" placeholder="e.g., Connaught Place" required>
-                </div>
-                <div class="form-group">
-                    <label>Title</label>
-                    <input type="text" class="form-control" id="reportTitle" placeholder="Brief description" required>
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea class="form-control" id="reportDesc" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Upload Photos</label>
-                    <input type="file" class="form-control" id="reportPhotos" accept="image/*" multiple>
-                </div>
-                <div class="form-group">
-                    <label>Upload Video</label>
-                    <input type="file" class="form-control" id="reportVideo" accept="video/*">
-                </div>
-                <div class="form-group">
-                    <label>Severity</label>
-                    <select class="form-control" id="reportSeverity">
-                        <option value="low">Low</option>
-                        <option value="medium">Medium</option>
-                        <option value="high">High</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Report</button>
-            </form>
-        </div>
-    </div>
-
-        <div id="toast" class="toast"></div>
-
-        <div id="loginPage" class="page">
-        <div class="contact-hero">
-            <div style="text-align: center;">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23ffd700;stop-opacity:1'/%3E%3Cstop offset='100%25' style='stop-color:%2300d4ff;stop-opacity:1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='45' fill='url(%23grad)'/%3E%3Cpath d='M30 60 L30 40 L40 35 L40 60 M45 60 L45 35 L55 30 L55 60 M60 60 L60 30 L70 25 L70 60' stroke='%230a0e12' stroke-width='3' fill='none'/%3E%3C/svg%3E" alt="City Sense" style="width: 100px; height: 100px; margin-bottom: 20px;">
-                <h1>Welcome to City Sense</h1>
-                <p style="font-size: 18px; color: var(--city-text-dim); max-width: 600px; margin: 20px auto;">
-                    Make your day better with real-time city updates
-                </p>
-            </div>
-        </div>
-
-        <div class="contact-form">
-            <form id="loginForm" onsubmit="handleLogin(event)">
-                <h2 style="text-align: center; margin-bottom: 30px;">Login to Your Account</h2>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" class="form-control" id="loginEmail" placeholder="Enter your email" required>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" class="form-control" id="loginPassword" placeholder="Enter your password" required>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
-                <p style="text-align: center; margin-top: 20px; color: var(--city-text-dim);">
-                    Demo: Any email + password (min 6 chars)
-                </p>
-            </form>
-        </div>
-    </div>
-
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&libraries=places"></script>
-    <script>
-        // State Management
-        const state = {
-            // *** MODIFICATION 1: Change default page from 'login' to 'home' ***
-            currentPage: 'home', 
-            currentCity: 'Delhi',
-            isLoggedIn: false,
-            currentUser: null,
-            userLocation: null,
-            incidents: [
-                {id: 1, city: 'Delhi', area: 'Connaught Place', title: 'Heavy Traffic Jam on Inner Circle', description: 'Major congestion due to event at central park', type: 'traffic', severity: 'high', verified: true, aiVerdict: 'real', confidence: 92, timestamp: '5 mins ago', x: 150, y: 120, lat: 28.632, lng: 77.218},
-                {id: 2, city: 'Delhi', area: 'Karol Bagh', title: 'Road Construction - Lane Closure', description: 'Metro construction causing delays', type: 'traffic', severity: 'medium', verified: true, aiVerdict: 'real', confidence: 88, timestamp: '15 mins ago', x: 200, y: 180, lat: 28.647, lng: 77.195},
-                {id: 3, city: 'Delhi', area: 'Nehru Place', title: 'Suspicious Activity Reported', description: 'Multiple reports of theft in market area', type: 'safety', severity: 'high', verified: false, aiVerdict: 'suspicious', confidence: 65, timestamp: '30 mins ago', x: 250, y: 220, lat: 28.552, lng: 77.253},
-                {id: 4, city: 'Mumbai', area: 'Marine Drive', title: 'Public Celebration Event', description: 'Large gathering for festival celebrations', type: 'event', severity: 'low', verified: true, aiVerdict: 'real', confidence: 95, timestamp: '1 hour ago', x: 180, y: 150, lat: 18.940, lng: 72.825},
-                {id: 5, city: 'Mumbai', area: 'Bandra', title: 'Traffic Accident - Two Vehicles', description: 'Accident causing delays on Western Express Highway', type: 'traffic', severity: 'high', verified: true, aiVerdict: 'real', confidence: 90, timestamp: '10 mins ago', x: 220, y: 200, lat: 19.062, lng: 72.839},
-                {id: 6, city: 'Bangalore', area: 'MG Road', title: 'Protest March Scheduled', description: 'Peaceful demonstration may affect traffic', type: 'event', severity: 'medium', verified: true, aiVerdict: 'real', confidence: 85, timestamp: '2 hours ago', x: 160, y: 140, lat: 12.973, lng: 77.603},
-                {id: 7, city: 'Bangalore', area: 'Whitefield', title: 'Waterlogging After Rain', description: 'Heavy rain causing road flooding', type: 'safety', severity: 'high', verified: true, aiVerdict: 'real', confidence: 93, timestamp: '20 mins ago', x: 280, y: 190, lat: 12.969, lng: 77.753},
-                {id: 8, city: 'Kolkata', area: 'Park Street', title: 'Power Outage in Commercial Area', description: 'Electricity disruption affecting businesses', type: 'safety', severity: 'medium', verified: false, aiVerdict: 'suspicious', confidence: 70, timestamp: '45 mins ago', x: 190, y: 170, lat: 22.553, lng: 88.351},
-                {id: 9, city: 'Chennai', area: 'T Nagar', title: 'Market Crowding - Slow Movement', description: 'Heavy shopping crowd causing congestion', type: 'traffic', severity: 'low', verified: true, aiVerdict: 'real', confidence: 80, timestamp: '1 hour ago', x: 210, y: 160, lat: 13.041, lng: 80.245},
-                {id: 10, city: 'Delhi', area: 'Chandni Chowk', title: 'Fire Reported in Commercial Building', description: 'Fire brigade on scene, avoid area', type: 'safety', severity: 'high', verified: true, aiVerdict: 'real', confidence: 98, timestamp: '3 mins ago', x: 170, y: 100, lat: 28.656, lng: 77.228}
-            ],
-            filters: {traffic: true, safety: true, news: true, event: true},
-            selectedIncident: null,
-            zoom: 1
-        };
-
-        // Global variables for Map instance (using let/const instead of implicit globals)
-        let map;
-        let markers = [];
-        let infoWindow;
-        
-        // Login/Logout Functions
-        function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            
-            if (password.length < 6) {
-                showToast('Password must be at least 6 characters', 'error');
-                return;
-            }
-            
-            state.isLoggedIn = true;
-            state.currentUser = {
-                email: email,
-                name: email.split('@')[0]
-            };
-            
-            document.getElementById('userName').textContent = '👤 ' + state.currentUser.name;
-            document.getElementById('userSection').style.display = 'block';
-            document.getElementById('loginSection').style.display = 'none';
-            
-            showToast('Login successful!', 'success');
-            navigateTo('home');
-            getUserLocation();
-        }
-
-        function logout() {
-            state.isLoggedIn = false;
-            state.currentUser = null;
-            
-            document.getElementById('userSection').style.display = 'none';
-            document.getElementById('loginSection').style.display = 'block';
-            
-            showToast('Logged out successfully', 'success');
-            navigateTo('login');
-        }
-
-        function checkAuth() {
-            if (!state.isLoggedIn && state.currentPage === 'app') {
-                showToast('Please login to access City View', 'error');
-                navigateTo('login');
-                return false;
-            }
-            return true;
-        }
-
-        // Get User Location
-        function getUserLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        state.userLocation = {
-                            lat: position.coords.latitude,
-                            lng: position.coords.longitude
-                        };
-                        updateLocationDisplay();
-                        if (state.currentPage === 'app' && map) {
-                            map.setCenter(state.userLocation);
-                            updateMapMarkers(); // Add user marker
-                        }
-                    },
-                    (error) => {
-                        document.getElementById('userLocationDisplay').textContent = 'Location access denied';
-                    }
-                );
-            }
-        }
-
-        function updateLocationDisplay() {
-            if (state.userLocation) {
-                const lat = state.userLocation.lat.toFixed(4);
-                const lng = state.userLocation.lng.toFixed(4);
-                document.getElementById('userLocationDisplay').innerHTML = `
-                    📍 Lat: ${lat}, Lng: ${lng}<br>
-                    <small style="opacity: 0.7;">Location detected</small>
-                `;
-            }
-        }
-
-        // Emergency Services
-        function callEmergency(number, service) {
-            if (confirm(`Call ${service} at ${number}?`)) {
-                showToast(`Calling ${service} at ${number}...`, 'success');
-                window.location.href = `tel:${number}`;
-            }
-        }
-
-        // Navigation
-        function navigateTo(page) {
-            if (page === 'app' && !checkAuth()) return;
-            
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            
-            if (page === 'home') {
-                document.getElementById('homePage').classList.add('active');
-                state.currentPage = 'home';
-            } else if (page === 'app') {
-                document.getElementById('appPage').classList.add('active');
-                state.currentPage = 'app';
-                // Only initialize map once, then just update markers
-                if (!map) {
-                    setTimeout(initGoogleMap, 100);
-                } else {
-                    updateMapMarkers();
-                }
-                updateFeed();
-                updateStats();
-                updatePlanDay();
-                getUserLocation();
-            } else if (page === 'login') {
-                document.getElementById('loginPage').classList.add('active');
-                state.currentPage = 'login';
-            } else if (page === 'about') {
-                document.getElementById('aboutPage').classList.add('active');
-                state.currentPage = 'about';
-            } else if (page === 'contact') {
-                document.getElementById('contactPage').classList.add('active');
-                state.currentPage = 'contact';
-            }
-
-            window.scrollTo(0, 0);
-        }
-
-        function scrollToSection(id) {
-            if (state.currentPage !== 'home') {
-                navigateTo('home');
-                setTimeout(() => {
-                    document.getElementById(id).scrollIntoView({behavior: 'smooth'});
-                }, 100);
-            } else {
-                document.getElementById(id).scrollIntoView({behavior: 'smooth'});
-            }
-        }
-
-        // Google Maps Integration
-        
-        function initGoogleMap() {
-            const mapCenter = state.userLocation || {lat: 28.6139, lng: 77.2090};
-            
-            map = new google.maps.Map(document.getElementById('googleMap'), {
-                center: mapCenter,
-                zoom: 12,
-                styles: [
-                    {elementType: 'geometry', stylers: [{color: '#1a1d2e'}]},
-                    {elementType: 'labels.text.stroke', stylers: [{color: '#0a0e12'}]},
-                    {elementType: 'labels.text.fill', stylers: [{color: '#ffd700'}]},
-                    {
-                        featureType: 'road',
-                        elementType: 'geometry',
-                        stylers: [{color: '#2c2c2c'}]
-                    },
-                    {
-                        featureType: 'water',
-                        elementType: 'geometry',
-                        stylers: [{color: '#00d4ff'}, {lightness: -50}]
-                    }
-                ]
-            });
-
-            infoWindow = new google.maps.InfoWindow();
-            
-            // Add user location marker if available
-            if (state.userLocation) {
-                new google.maps.Marker({
-                    position: state.userLocation,
-                    map: map,
-                    icon: {
-                        path: google.maps.SymbolPath.CIRCLE,
-                        scale: 10,
-                        fillColor: '#00d4ff',
-                        fillOpacity: 1,
-                        strokeColor: '#ffffff',
-                        strokeWeight: 2
-                    },
-                    title: 'Your Location'
-                });
-            }
-            
-            updateMapMarkers();
-        }
-
-        function updateMapMarkers() {
-            if (!map) return;
-            
-            // Clear existing markers
-            markers.forEach(marker => marker.setMap(null));
-            markers = [];
-            
-            const filtered = getFilteredIncidents();
-            
-            filtered.forEach(incident => {
-                // Use the lat/lng property if available, otherwise get a random position around the city center
-                const position = incident.lat && incident.lng 
-                    ? {lat: incident.lat, lng: incident.lng}
-                    : getRandomPosition(state.currentCity);
-                
-                const markerColor = 
-                    incident.type === 'traffic' ? '#ff9500' :
-                    incident.type === 'safety' ? '#ff3b30' :
-                    incident.type === 'news' ? '#00d4ff' : '#34c759';
-                
-                const marker = new google.maps.Marker({
-                    position: position,
-                    map: map,
-                    icon: {
-                        path: google.maps.SymbolPath.CIRCLE,
-                        scale: 12,
-                        fillColor: markerColor,
-                        fillOpacity: 0.9,
-                        strokeColor: '#ffffff',
-                        strokeWeight: 2
-                    },
-                    title: incident.title
-                });
-                
-                marker.addListener('click', () => {
-                    showIncidentInfo(incident, marker);
-                });
-                
-                markers.push(marker);
-            });
-        }
-
-        function getRandomPosition(city) {
-            const cityCoords = {
-                'Delhi': {lat: 28.6139, lng: 77.2090},
-                'Mumbai': {lat: 19.0760, lng: 72.8777},
-                'Bangalore': {lat: 12.9716, lng: 77.5946},
-                'Kolkata': {lat: 22.5726, lng: 88.3639},
-                'Chennai': {lat: 13.0827, lng: 80.2707}
-            };
-            const base = cityCoords[city] || {lat: 28.6139, lng: 77.2090};
-            return {
-                lat: base.lat + (Math.random() - 0.5) * 0.1,
-                lng: base.lng + (Math.random() - 0.5) * 0.1
-            };
-        }
-
-        function showIncidentInfo(incident, marker) {
-            const mediaHtml = incident.photos ? 
-                `<div style="margin: 10px 0;">
-                    ${incident.photos.map(photo => `<img src="${photo}" style="width: 100%; max-width: 200px; border-radius: 8px; margin: 5px 0;">`).join('')}
-                </div>` : '';
-            
-            const videoHtml = incident.video ?
-                `<div style="margin: 10px 0;">
-                    <video controls style="width: 100%; max-width: 200px; border-radius: 8px;">
-                        <source src="${incident.video}" type="video/mp4">
-                    </video>
-                </div>` : '';
-            
-            const content = `
-                <div style="color: #0a0e12; padding: 10px;">
-                    <h3 style="margin: 0 0 10px 0;">${incident.title}</h3>
-                    <p style="margin: 5px 0;"><strong>Type:</strong> ${incident.type}</p>
-                    <p style="margin: 5px 0;"><strong>Severity:</strong> ${incident.severity}</p>
-                    <p style="margin: 5px 0;">${incident.description}</p>
-                    ${mediaHtml}
-                    ${videoHtml}
-                    <p style="margin: 5px 0; font-size: 12px; color: #666;">
-                        📍 ${incident.area} • ⏰ ${incident.timestamp}
-                    </p>
-                    <p style="margin: 5px 0; font-size: 12px;">
-                        AI Verification: ${incident.confidence}% ${incident.aiVerdict}
-                    </p>
-                </div>
-            `;
-            
-            infoWindow.setContent(content);
-            infoWindow.open(map, marker);
-            
-            state.selectedIncident = incident.id;
-            updateFeed();
-            showNewsDetail(incident);
-        }
-
-        function showNewsDetail(incident) {
-            const mediaHtml = incident.photos ? 
-                `<div style="margin: 10px 0;">
-                    ${incident.photos.map(photo => `<img src="${photo}" style="width: 100%; border-radius: 8px; margin: 5px 0;">`).join('')}
-                </div>` : '';
-            
-            const videoHtml = incident.video ?
-                `<div style="margin: 10px 0;">
-                    <video controls style="width: 100%; border-radius: 8px;">
-                        <source src="${incident.video}" type="video/mp4">
-                    </video>
-                </div>` : '';
-            
-            document.getElementById('newsDetailView').innerHTML = `
-                <div style="background: var(--city-dark); padding: 15px; border-radius: 8px;">
-                    <h4 style="color: var(--city-yellow); margin-bottom: 10px;">${incident.title}</h4>
-                    <p style="margin: 5px 0;">📍 ${incident.area}, ${incident.city}</p>
-                    <p style="margin: 5px 0;">⏰ ${incident.timestamp}</p>
-                    <p style="margin: 10px 0; line-height: 1.6;">${incident.description}</p>
-                    ${mediaHtml}
-                    ${videoHtml}
-                    <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-                        <small>AI Verification: ${incident.confidence}% ${incident.aiVerdict}</small>
-                    </div>
-                </div>
-            `;
-        }
-
-        function toggleMenu() {
-            const navLinks = document.getElementById('navLinks');
-            navLinks.classList.toggle('active');
-        }
-
-        function closeMenu() {
-            const navLinks = document.getElementById('navLinks');
-            navLinks.classList.remove('active');
-        }
-
-        function zoomIn() {
-            if (map) map.setZoom(map.getZoom() + 1);
-        }
-
-        function zoomOut() {
-            if (map) map.setZoom(map.getZoom() - 1);
-        }
-
-        // Feed Functions
-        function getFilteredIncidents() {
-            return state.incidents.filter(i => 
-                i.city === state.currentCity && state.filters[i.type]
-            );
-        }
-
-        function updateFeed() {
-            const feedList = document.getElementById('feedList');
-            const filtered = getFilteredIncidents();
-            
-            feedList.innerHTML = filtered.map(incident => `
-                <div class="feed-item ${incident.type} ${state.selectedIncident === incident.id ? 'highlighted' : ''}" 
-                     onclick="selectFromFeed(${incident.id})">
-                    <div class="feed-item-title">${incident.title}</div>
-                    <div class="feed-item-meta">
-                        <span>📍 ${incident.area}</span>
-                        <span>⏰ ${incident.timestamp}</span>
-                        <span>${incident.type}</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function selectFromFeed(id) {
-            state.selectedIncident = id;
-            const incident = state.incidents.find(i => i.id === id);
-            if (incident) {
-                updateFeed();
-                showNewsDetail(incident);
-                
-                // Center map on incident
-                if (map && incident.lat && incident.lng) {
-                    map.panTo({lat: incident.lat, lng: incident.lng});
-                    map.setZoom(14);
-                    
-                    // Find and click the marker
-                    markers.forEach(marker => {
-                        if (marker.getTitle() === incident.title) {
-                            google.maps.event.trigger(marker, 'click');
-                        }
-                    });
-                }
-            }
-        }
-
-        function refreshFeed() {
-            updateFeed();
-            showToast('Feed refreshed', 'success');
-        }
-
-        // Filter Functions
-        function toggleFilter(type) {
-            state.filters[type] = !state.filters[type];
-            updateMapMarkers();
-            updateFeed();
-            updateStats();
-        }
-
-        function changeCity() {
-            state.currentCity = document.getElementById('citySelector').value;
-            
-            const cityCoords = {
-                'Delhi': {lat: 28.6139, lng: 77.2090},
-                'Mumbai': {lat: 19.0760, lng: 72.8777},
-                'Bangalore': {lat: 12.9716, lng: 77.5946},
-                'Kolkata': {lat: 22.5726, lng: 88.3639},
-                'Chennai': {lat: 13.0827, lng: 80.2707}
-            };
-            
-            if (map && cityCoords[state.currentCity]) {
-                map.setCenter(cityCoords[state.currentCity]);
-                map.setZoom(12);
-            }
-            
-            updateMapMarkers();
-            updateFeed();
-            updateStats();
-            updatePlanDay();
-            showToast(`Switched to ${state.currentCity}`, 'success');
-        }
-
-        // Statistics
-        function updateStats() {
-            const filtered = getFilteredIncidents();
-            document.getElementById('statAlerts').textContent = filtered.length;
-            document.getElementById('statVerified').textContent = filtered.filter(i => i.verified).length;
-            document.getElementById('statTraffic').textContent = filtered.filter(i => i.type === 'traffic').length;
-            document.getElementById('statSafe').textContent = Math.max(0, 12 - filtered.filter(i => i.severity === 'high').length);
-        }
-
-        // Plan Your Day
-        function updatePlanDay() {
-            const filtered = getFilteredIncidents();
-            const highRisk = filtered.filter(i => i.severity === 'high').length;
-            
-            let riskLevel;
-            let riskClass;
-            if (highRisk >= 3) {
-                riskLevel = 'High Risk';
-                riskClass = 'risk-high';
-            } else if (highRisk >= 1) {
-                riskLevel = 'Medium Risk';
-                riskClass = 'risk-medium';
-            } else {
-                riskLevel = 'Low Risk';
-                riskClass = 'risk-low';
-            }
-            
-            document.getElementById('riskLevel').innerHTML = 
-                `<span class="risk-level ${riskClass}">Overall: ${riskLevel}</span>`;
-            
-            const topRisky = filtered
-                .filter(i => i.severity === 'high')
-                .slice(0, 3);
-            
-            document.getElementById('riskyAreas').innerHTML = topRisky.length > 0
-                ? topRisky.map(i => `<li>⚠️ ${i.area}</li>`).join('')
-                : '<li>No high-risk areas currently</li>';
-            
-            document.getElementById('routeSuggestion').textContent = 
-                highRisk > 0 
-                    ? `Suggestion: Avoid ${topRisky[0]?.area || 'congested areas'} for safer travel`
-                    : 'All major routes are currently safe';
-        }
-
-        // AI News Verification
-        function verifyNews() {
-            const input = document.getElementById('newsInput').value.trim();
-            if (!input) {
-                showToast('Please enter a news headline', 'error');
-                return;
-            }
-            
-            const resultDiv = document.getElementById('aiResult');
-            resultDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Analyzing with AI...</p></div>';
-            resultDiv.className = 'ai-result show';
-            
-            setTimeout(() => {
-                const analysis = analyzeNews(input);
-                displayAIResult(analysis);
-            }, 2000);
-        }
-
-        function analyzeNews(text) {
-            const fakeWords = ['shocking', 'unbelievable', 'must see', 'click here', 'breaking', 'exclusive', 'miracle', 'secret'];
-            const realWords = ['reported', 'according to', 'sources', 'official', 'confirmed', 'study shows'];
-            
-            let score = 75;
-            const reasons = [];
-            const textLower = text.toLowerCase();
-            
-            fakeWords.forEach(word => {
-                if (textLower.includes(word)) {
-                    score -= 12;
-                    reasons.push(`Contains sensational language: "${word}"`);
-                }
-            });
-            
-            realWords.forEach(word => {
-                if (textLower.includes(word)) {
-                    score += 7;
-                    reasons.push(`Contains credible indicator: "${word}"`);
-                }
-            });
-            
-            score = Math.max(0, Math.min(100, score));
-            
-            let verdict = 'suspicious';
-            if (score >= 75) verdict = 'real';
-            if (score < 50) verdict = 'fake';
-            
-            if (reasons.length === 0) {
-                reasons.push('Analyzed language patterns and structure');
-                reasons.push('Cross-referenced with known misinformation tactics');
-                reasons.push('Checked for emotional manipulation indicators');
-            }
-            
-            return {score, verdict, reasons, headline: text};
-        }
-
-        function displayAIResult(analysis) {
-            const resultDiv = document.getElementById('aiResult');
-            const scoreColor = analysis.verdict === 'real' ? '#34c759' : 
-                              analysis.verdict === 'fake' ? '#ff3b30' : '#ffd700';
-            
-            resultDiv.className = `ai-result show ${analysis.verdict}`;
-            resultDiv.innerHTML = `
-                <div class="ai-score">
-                    <h4>Credibility Score</h4>
-                    <div class="score-number" style="color: ${scoreColor}">${analysis.score}%</div>
-                    <span class="verdict-badge ${analysis.verdict}" style="background: rgba(${
-                        analysis.verdict === 'real' ? '52, 199, 89' : 
-                        analysis.verdict === 'fake' ? '255, 59, 48' : '255, 215, 0'
-                    }, 0.2); color: ${scoreColor}">${analysis.verdict.toUpperCase()}</span>
-                </div>
-                <div style="margin-top: 20px;">
-                    <h4 style="margin-bottom: 10px;">AI Analysis</h4>
-                    <ul class="ai-reasons">
-                        ${analysis.reasons.map(r => `<li>• ${r}</li>`).join('')}
-                    </ul>
-                </div>
-            `;
-        }
-
-        // Report Modal
-        function openReportModal() {
-            document.getElementById('reportModal').classList.add('show');
-        }
-
-        function closeReportModal() {
-            document.getElementById('reportModal').classList.remove('show');
-            document.getElementById('reportForm').reset();
-        }
-
-        function submitReport(e) {
-            e.preventDefault();
-            
-            // Handle file uploads
-            const photoFiles = document.getElementById('reportPhotos').files;
-            const videoFile = document.getElementById('reportVideo').files[0];
-            
-            const photos = [];
-            for (let file of photoFiles) {
-                photos.push(URL.createObjectURL(file));
-            }
-            
-            const video = videoFile ? URL.createObjectURL(videoFile) : null;
-            
-            // Analyze news with AI
-            const reportTitle = document.getElementById('reportTitle').value;
-            const reportDesc = document.getElementById('reportDesc').value;
-            const newsText = reportTitle + ' ' + reportDesc;
-            const aiAnalysis = analyzeNews(newsText);
-            
-            const randomCoords = getRandomPosition(state.currentCity);
-            
-            const newIncident = {
-                id: state.incidents.length + 1,
-                city: state.currentCity,
-                area: document.getElementById('reportLocation').value,
-                title: reportTitle,
-                description: reportDesc,
-                type: document.getElementById('reportType').value,
-                severity: document.getElementById('reportSeverity').value,
-                verified: false,
-                aiVerdict: aiAnalysis.verdict,
-                confidence: aiAnalysis.score,
-                timestamp: 'Just now',
-                photos: photos.length > 0 ? photos : null,
-                video: video,
-                lat: state.userLocation ? state.userLocation.lat + (Math.random() - 0.5) * 0.05 : randomCoords.lat,
-                lng: state.userLocation ? state.userLocation.lng + (Math.random() - 0.5) * 0.05 : randomCoords.lng,
-                postedBy: state.currentUser ? state.currentUser.name : 'Anonymous'
-            };
-            
-            state.incidents.unshift(newIncident);
-            
-            closeReportModal();
-            updateMapMarkers();
-            updateFeed();
-            updateStats();
-            updatePlanDay();
-            
-            showToast('News posted successfully! AI Verdict: ' + aiAnalysis.verdict.toUpperCase(), 'success');
-        }
-
-        // Contact Form
-        function submitContact(e) {
-            e.preventDefault();
-            
-            document.getElementById('contactSuccess').classList.add('show');
-            document.getElementById('contactFormElement').reset();
-            
-            setTimeout(() => {
-                document.getElementById('contactSuccess').classList.remove('show');
-            }, 5000);
-        }
-
-        // FAQ Toggle
-        function toggleFaq(element) {
-            element.classList.toggle('active');
-        }
-
-        // Toast
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.className = `toast ${type} show`;
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-
-        // Initialize
-        window.addEventListener('load', () => {
-            // *** MODIFICATION 2: Navigate to the starting page defined in state (now 'home') ***
-            navigateTo(state.currentPage); 
-        });
-
-        let resizeTimeout;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                if (state.currentPage === 'app' && map) {
-                    google.maps.event.trigger(map, 'resize');
-                }
-            }, 250);
-        });
-
-        // Prevent zoom on double tap (iOS)
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', (e) => {
-            const now = Date.now();
-            if (now - lastTouchEnd <= 300) {
-                e.preventDefault();
-            }
-            lastTouchEnd = now;
-        }, false);
-    </script>
-</body>
-</html>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo" onclick="navigateTo('home')">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23ffd700;stop-opacity:1'/%3E%3Cstop offset='100%25' style='stop-color:%2300d4ff;stop-opacity:1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='45' fill='url(%23grad)'/%3E%3Cpath d='M30 60 L30 40 L40 35 L40 60 M45 60 L45 35 L55 30 L55 60 M60 60 L60 30 L70 25 L70 60' stroke='%230a0e12' stroke-width='3' fill='none'/%3E%3C/svg%3E" alt="City Sense">
+                <span>City Sense</span>
+            </div>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a onclick="navigateTo('home'); closeMenu();" class="nav-link">Home</a></li>
+                <li><a onclick="navigateTo('app'); closeMenu();" class="nav-link">Open City View</a></li>
+                <li><a onclick="navigateTo('about'); closeMenu();" class="nav-link">About</a></li>
+                <li><a onclick="navigateTo('contact'); closeMenu();" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div id="homePage" class="page active">
+        <section class="hero">
+            <div class="hero-content">
+                <h1>City Sense makes your day better</h1>
+                <p>Real-time, AI-verified updates on safety, traffic, and events around you.</p>
+                <div class="cta-buttons">
+                    <button class="btn btn-primary" onclick="navigateTo('app')">Open City View</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('how-it-works').scrollIntoView({behavior: 'smooth'})">See How It Works</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <h2 class="section-title">The City Blind Spot</h2>
+                <div class="cards-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🤷</div>
+                        <h3>No Real-Time Awareness</h3>
+                        <p>People don't know what's really happening around them in their city right now.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📰</div>
+                        <h3>Fake News Confusion</h3>
+                        <p>Unverified news creates panic and makes it hard to know what's actually true.</p>
+                    </div>
+                    <div class="feature-card">
